@@ -1,17 +1,31 @@
 package com.curso.springboot.resources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.curso.springboot.domain.Categoria;
 
 @RestController
 @RequestMapping(value = "/categorias")
 public class CategoriaResource {
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String listar() {
+	public List<Categoria> listar() {
+		List<Categoria> lista = new ArrayList<Categoria>();
 		
-		return "Rest está funcionando!";
+		Categoria c1 = new Categoria(1, "informatica");
+		
+		lista.add(c1);
+		
+		Categoria c2 = new Categoria(2, "escritorio");
+		
+		lista.add(c2);
+		
+		return lista;
 	}
 
 }
