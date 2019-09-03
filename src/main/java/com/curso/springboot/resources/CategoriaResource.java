@@ -22,16 +22,10 @@ public class CategoriaResource {
 	private CategoriaService service;
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<?> find(@PathVariable Integer id) throws Exception {
 		Categoria obj = null;
-		
-		try {
 			
-			obj = this.service.buscar(id);
-		
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+		obj = this.service.find(id);
 		
 		return ResponseEntity.ok(obj);
 	}
