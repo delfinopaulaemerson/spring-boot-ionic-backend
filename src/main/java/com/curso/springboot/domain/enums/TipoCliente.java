@@ -1,7 +1,5 @@
 package com.curso.springboot.domain.enums;
 
-import net.bytebuddy.implementation.bytecode.Throw;
-
 public enum TipoCliente {
 	
 	PESSOAFISICA(1, "Pessoa Física"),PESSOAJURIDICA(2, "Pessoa Jurídica");
