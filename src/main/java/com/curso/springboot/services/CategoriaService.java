@@ -95,10 +95,5 @@ public class CategoriaService {
 		
 		return new Categoria(objDTO.getId(), objDTO.getNome());
 	}
-
-
-	
-
-
 	
 }
