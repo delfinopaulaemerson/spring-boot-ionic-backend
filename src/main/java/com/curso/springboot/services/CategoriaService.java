@@ -42,12 +42,20 @@ public class CategoriaService {
 
 	public Categoria update(Categoria obj) {
 		//metodo find verifica a existencia do objeto
-		this.find(obj.getId());
+		Categoria newObj = this.find(obj.getId());
+		
+		this.updateData(newObj,obj);
 		
 		//mesmo sem o find o spring data verifica a existencia do id
 		//existindo ele atualiza o objeto
 		//nao existindo ele cria o objeto
-		return this.repo.save(obj);
+		return this.repo.save(newObj);
+	}
+
+
+	private void updateData(Categoria newObj, Categoria obj) {
+		newObj.setNome(obj.getNome());
+		
 	}
 
 
