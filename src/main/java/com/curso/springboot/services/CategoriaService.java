@@ -18,7 +18,7 @@ public class CategoriaService {
 	private CategoriaRepository repo;
 	
 	
-	public Categoria find(Integer id) throws Exception {
+	public Categoria find(Integer id) {
 		
 		Optional<Categoria> obj = this.repo.findById(id);
 		
@@ -30,6 +30,17 @@ public class CategoriaService {
 	public Categoria insert(Categoria obj) {
 		obj.setId(null);
 		return repo.save(obj);
+	}
+
+
+	public Categoria update(Categoria obj) {
+		//metodo find verifica a existencia do objeto
+		this.find(obj.getId());
+		
+		//mesmo sem o find o spring data verifica a existencia do id
+		//existindo ele atualiza o objeto
+		//nao existindo ele cria o objeto
+		return this.repo.save(obj);
 	}
 
 }

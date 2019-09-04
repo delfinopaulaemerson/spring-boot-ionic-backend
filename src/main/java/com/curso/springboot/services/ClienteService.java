@@ -18,7 +18,7 @@ public class ClienteService {
 	private ClienteRepository repo;
 	
 	
-	public Cliente find(Integer id) throws Exception {
+	public Cliente find(Integer id) {
 		
 		Optional<Cliente> obj = this.repo.findById(id);
 		

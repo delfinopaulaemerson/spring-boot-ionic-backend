@@ -18,7 +18,7 @@ public class PedidoService {
 	private PedidoRepository repo;
 	
 	
-	public Pedido find(Integer id) throws Exception {
+	public Pedido find(Integer id){
 		
 		Optional<Pedido> obj = this.repo.findById(id);
 		
