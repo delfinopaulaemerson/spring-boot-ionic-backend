@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.curso.springboot.domain.Cliente;
 import com.curso.springboot.dto.ClienteDTO;
+import com.curso.springboot.dto.ClienteNewDTO;
 import com.curso.springboot.services.ClienteService;
 
 @RestController
@@ -41,11 +42,10 @@ public class ClienteResource {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO objDTO){
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDTO){
 		Cliente obj = this.service.fromDTO(objDTO);
 		
 		obj = service.insert(obj);
-		
 	
 		//retorna no headers a nova uri com o id do objeto criado
 		this.uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();

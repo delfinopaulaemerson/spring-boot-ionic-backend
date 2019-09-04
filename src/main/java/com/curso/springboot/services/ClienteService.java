@@ -10,9 +10,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.curso.springboot.domain.Categoria;
+import com.curso.springboot.domain.Cidade;
 import com.curso.springboot.domain.Cliente;
+import com.curso.springboot.domain.Endereco;
+import com.curso.springboot.domain.enums.TipoCliente;
 import com.curso.springboot.dto.ClienteDTO;
+import com.curso.springboot.dto.ClienteNewDTO;
+import com.curso.springboot.repositories.CidadeRepository;
 import com.curso.springboot.repositories.ClienteRepository;
+import com.curso.springboot.repositories.EnderecoRepository;
 import com.curso.springboot.services.exception.DataIntegrityException;
 import com.curso.springboot.services.exception.ObjectNotFoundException;
 
@@ -24,6 +31,12 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository repo;
 	
+	@Autowired
+	private CidadeRepository cidadeRepository;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
+	
 	
 	public Cliente find(Integer id) {
 		
@@ -31,6 +44,17 @@ public class ClienteService {
 		
 		return obj.orElseThrow(() -> new ObjectNotFoundException(" Cliente não encontrado! ID: " + id +", Tipo "+ Cliente.class.getName()));
 		
+	}
+	
+	
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		
+		obj =  repo.save(obj);
+		
+		this.enderecoRepository.saveAll(obj.getEnderecos());
+		
+		return obj;
 	}
 	
 	public Cliente update(Cliente obj) {
@@ -97,10 +121,41 @@ public class ClienteService {
 		c = new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null);
 		return c;
 	}
-
-	public Cliente insert(Cliente obj) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public Cliente fromDTO(ClienteNewDTO objetoDTO) {
+		Cliente cli = null;
+		
+		Cidade cid  = null;
+		
+		Endereco end = null;
+		
+		cli =  new Cliente(null, objetoDTO.getNome(), objetoDTO.getEmail(),objetoDTO.getCpfOuCnpj(), TipoCliente.toEnum(objetoDTO.getTipo()));
+		
+		cid  = this.findById(objetoDTO.getCidadeId());
+		
+		end = new Endereco(null, objetoDTO.getLogradouro(), objetoDTO.getNumero(),objetoDTO.getComplemento(), null, objetoDTO.getCep(), cli, cid);
+		
+		cli.getEnderecos().add(end);
+		
+		cli.getTelefones().add(objetoDTO.getTelefone1());
+		
+		if(objetoDTO.getTelefone2() != null) 
+			cli.getTelefones().add(objetoDTO.getTelefone2());
+		
+		if(objetoDTO.getTelefone3() != null) 
+			cli.getTelefones().add(objetoDTO.getTelefone3());
+		
+		
+		return cli;
+		
+	}
+	
+	private Cidade findById(Integer cidadeId) {
+		
+		Optional<Cidade> cidade  = this.cidadeRepository.findById(cidadeId);
+		
+		
+		return cidade.orElseThrow(() -> new ObjectNotFoundException(" Objeto não encontrado! ID: " + cidadeId +", Tipo "+ Categoria.class.getName()));
 	}
 
 }
