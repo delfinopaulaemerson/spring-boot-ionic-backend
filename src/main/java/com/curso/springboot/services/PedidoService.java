@@ -5,9 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.curso.springboot.domain.Categoria;
 import com.curso.springboot.domain.Pedido;
-import com.curso.springboot.repositories.CategoriaRepository;
 import com.curso.springboot.repositories.PedidoRepository;
 import com.curso.springboot.services.exception.ObjectNotFoundException;
 
