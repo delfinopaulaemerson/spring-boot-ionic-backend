@@ -41,6 +41,14 @@ public class ItemPedido implements Serializable{
 		return id.getPedido();
 	}
 	
+	/**
+	 * metodo para calculo do valor do pedido
+	 * @return Double
+	 */
+	public Double getSubtotal() {
+		return(this.preco - this.desconto) * quantidade;
+	}
+	
 	
 	public Produto getProduto() {
 		
