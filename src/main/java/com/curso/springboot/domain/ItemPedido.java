@@ -41,6 +41,10 @@ public class ItemPedido implements Serializable{
 		return id.getPedido();
 	}
 	
+	public void setPedido(Pedido pedido) {
+		id.setPedido(pedido);
+	}
+	
 	/**
 	 * metodo para calculo do valor do pedido
 	 * @return Double
@@ -53,6 +57,12 @@ public class ItemPedido implements Serializable{
 	public Produto getProduto() {
 		
 		return id.getProduto();
+	}
+	
+	
+	private void setProduto(Produto produto) {
+		id.setProduto(produto);
+
 	}
 
 	public ItemPedidoPk getId() {

@@ -1,12 +1,23 @@
 package com.curso.springboot.services;
 
+import java.util.Date;
 import java.util.Optional;
+
+import javax.validation.Valid;
+import javax.xml.crypto.dsig.keyinfo.PGPData;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.curso.springboot.domain.ItemPedido;
+import com.curso.springboot.domain.PagamentoComBoleto;
 import com.curso.springboot.domain.Pedido;
+import com.curso.springboot.domain.enums.EstadoPagamento;
+import com.curso.springboot.repositories.ItemPedidoRepository;
+import com.curso.springboot.repositories.PagamentoRepository;
 import com.curso.springboot.repositories.PedidoRepository;
+import com.curso.springboot.repositories.ProdutoRepository;
 import com.curso.springboot.services.exception.ObjectNotFoundException;
 
 
@@ -17,6 +28,18 @@ public class PedidoService {
 	@Autowired
 	private PedidoRepository repo;
 	
+	@Autowired
+	private boletoService boletoService;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private ProdutoService produtoService;
+	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
+	
 	
 	public Pedido find(Integer id){
 		
@@ -24,6 +47,47 @@ public class PedidoService {
 		
 		return obj.orElseThrow(() -> new ObjectNotFoundException(" Objeto não encontrado! ID: " + id +", Tipo "+ Pedido.class.getName()));
 		
+	}
+
+	
+	public Pedido insert( Pedido obj) {
+		obj.setId(null);
+		obj.setInstante(new Date());
+		obj.getPagamento().setEstadoPagamento(EstadoPagamento.PENDENTE);
+		
+		if(obj.getPagamento() instanceof PagamentoComBoleto) {
+			PagamentoComBoleto pagto = (PagamentoComBoleto) obj.getPagamento();
+			this.boletoService.preencherPagamentoComBoleto(pagto,obj.getInstante());
+		}
+		
+		try {
+			
+			this.repo.save(obj);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		//salvando o pedido
+		try {
+			
+			//salvando o pagamento
+			this.pagamentoRepository.save(obj.getPagamento());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		for (ItemPedido ip : obj.getItens()) {
+			ip.setDesconto(0.0);
+			ip.setPreco(this.produtoService.find(ip.getProduto().getId()).getPreco());
+			ip.setPedido(obj);
+		}
+		try {
+			//salvando o itens de pedidos
+			this.itemPedidoRepository.saveAll(obj.getItens());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	
+		return obj;
 	}
 
 }
