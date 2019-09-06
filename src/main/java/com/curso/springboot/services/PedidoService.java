@@ -11,6 +11,7 @@ import com.curso.springboot.domain.ItemPedido;
 import com.curso.springboot.domain.PagamentoComBoleto;
 import com.curso.springboot.domain.Pedido;
 import com.curso.springboot.domain.enums.EstadoPagamento;
+import com.curso.springboot.repositories.ClienteRepository;
 import com.curso.springboot.repositories.ItemPedidoRepository;
 import com.curso.springboot.repositories.PagamentoRepository;
 import com.curso.springboot.repositories.PedidoRepository;
@@ -36,6 +37,9 @@ public class PedidoService {
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 	
+	@Autowired
+	private ClienteService clienteService;
+	
 	
 	public Pedido find(Integer id){
 		
@@ -49,6 +53,7 @@ public class PedidoService {
 	public Pedido insert( Pedido obj) {
 		obj.setId(null);
 		obj.setInstante(new Date());
+		obj.setCliente(this.clienteService.find(obj.getCliente().getId()));
 		obj.getPagamento().setEstadoPagamento(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 		
@@ -73,6 +78,8 @@ public class PedidoService {
 		
 			//salvando o itens de pedidos
 		this.itemPedidoRepository.saveAll(obj.getItens());
+		
+		System.out.println(obj);
 		
 		return obj;
 	}
