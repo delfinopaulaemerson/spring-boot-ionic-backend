@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +12,6 @@ import com.curso.springboot.domain.ItemPedido;
 import com.curso.springboot.domain.PagamentoComBoleto;
 import com.curso.springboot.domain.Pedido;
 import com.curso.springboot.domain.enums.EstadoPagamento;
-import com.curso.springboot.repositories.ClienteRepository;
 import com.curso.springboot.repositories.ItemPedidoRepository;
 import com.curso.springboot.repositories.PagamentoRepository;
 import com.curso.springboot.repositories.PedidoRepository;
@@ -39,6 +39,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private PrepareAndSendEmailService prepareAndSendEmailService;
 	
 	
 	public Pedido find(Integer id){
@@ -79,7 +82,9 @@ public class PedidoService {
 			//salvando o itens de pedidos
 		this.itemPedidoRepository.saveAll(obj.getItens());
 		
-		System.out.println(obj);
+		SimpleMailMessage msg = this.prepareAndSendEmailService.prepareSimpleMailMessageFromPedido(obj);
+		
+		this.prepareAndSendEmailService.sendEmail(msg);
 		
 		return obj;
 	}
