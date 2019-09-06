@@ -97,7 +97,25 @@ public class PrepareAndSendEmailService  implements EmailService {
 	public String htmlFromTemplatePedidos(Pedido obj) throws Exception {
 		String template = null;
 		Context context = new Context();
+		emailDTO emailDTO = null;
 		
+		emailDTO = new emailDTO();
+		emailDTO = this.pedidoToEmailDTO(obj);
+		
+		context.setVariable("emailDTO",emailDTO);
+		template = this.templateEngine.process("email/confirmacaoPedido",context);
+		
+		return template;
+	}
+	
+
+	/**
+	 * encapsulando os valores do objeto pedido
+	 * ao emailDTO
+	 * @param obj
+	 * @return emailDTO
+	 */
+	private emailDTO pedidoToEmailDTO(Pedido obj) {
 		emailDTO emailDTO = new emailDTO();
 		emailDTO.setIdPedido(obj.getId().toString());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -120,12 +138,8 @@ public class PrepareAndSendEmailService  implements EmailService {
 		
 		emailDTO.setItens(emailDTOAuxs);
 		
-		context.setVariable("emailDTO",emailDTO);
-		template = this.templateEngine.process("email/confirmacaoPedido",context);
-		
-		return template;
+		return emailDTO;
 	}
-	
 
 	public MimeMessage prepareMimeMessageFromPedido(Pedido obj) throws Exception {
 		MimeMessage mm = this.javaMailSender.createMimeMessage();
@@ -140,6 +154,10 @@ public class PrepareAndSendEmailService  implements EmailService {
 		return mm;
 	}
 
+	/**
+	 * preparo para envio de email utilizando o
+	 * framework thymeleaf
+	 */
 	@Override
 	public void sendHtmlEmail(MimeMessage msg) {
 		LOG.info("envio de email...");
