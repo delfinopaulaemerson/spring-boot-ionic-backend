@@ -3,6 +3,9 @@ package com.curso.springboot.services;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -53,7 +56,7 @@ public class PedidoService {
 	}
 
 	@Transactional
-	public Pedido insert( Pedido obj) {
+	public Pedido insert( Pedido obj) throws Exception {
 		obj.setId(null);
 		obj.setInstante(new Date());
 		obj.setCliente(this.clienteService.find(obj.getCliente().getId()));
@@ -82,9 +85,15 @@ public class PedidoService {
 			//salvando o itens de pedidos
 		this.itemPedidoRepository.saveAll(obj.getItens());
 		
-		SimpleMailMessage msg = this.prepareAndSendEmailService.prepareSimpleMailMessageFromPedido(obj);
+		//SimpleMailMessage msg = this.prepareAndSendEmailService.prepareSimpleMailMessageFromPedido(obj);
 		
-		this.prepareAndSendEmailService.sendEmail(msg);
+		//this.prepareAndSendEmailService.sendEmail(msg);
+		
+		
+		MimeMessage mm = this.prepareAndSendEmailService.prepareMimeMessageFromPedido(obj);
+		
+		this.prepareAndSendEmailService.sendHtmlEmail(mm);
+		
 		
 		return obj;
 	}
