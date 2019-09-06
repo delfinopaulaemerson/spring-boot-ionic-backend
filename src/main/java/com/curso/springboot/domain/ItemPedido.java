@@ -60,7 +60,7 @@ public class ItemPedido implements Serializable{
 	}
 	
 	
-	private void setProduto(Produto produto) {
+	public void setProduto(Produto produto) {
 		id.setProduto(produto);
 
 	}
