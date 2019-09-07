@@ -34,13 +34,44 @@ public class JWTUtil {
 	public String generateToken(String username) {
 		String token = null;
 			Claims claims = Jwts.claims().setSubject(username);
-		
+			
+			//TUDO adicionar a expiracao do token
 			token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
 		
 		
 		return token;
 	}
 	
+	public boolean tokenValido(String token) {
+		Claims claims = null;
+		String username = null;
+		try {
+			claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+			if(claims != null) {
+				username = claims.getSubject();
+				//TUDO implementar a expiracao do token
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
+	}
 	
+	public String getUsername(String token) {
+		Claims claims = null;
+		String username = null;
+		try {
+			claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+			if(claims != null) {
+				username = claims.getSubject();
+				//TUDO implementar a expiracao do token
+			}
+		} catch (Exception e) {
+			return username;
+		}
+		
+		return username;
+	}
 
 }
