@@ -7,14 +7,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.curso.springboot.security.JWTAuthenticationFilter;
+import com.curso.springboot.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +27,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private Environment environment;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private JWTUtil jwtUtil;
 	
 	public final static String[] PUBLIC_MATCHERS = {"/h2-console/**"};
 	
@@ -36,7 +47,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.cors().and().csrf().disable();
 		http.authorizeRequests().antMatchers(HttpMethod.GET,PUBLIC_MATCHERS_GET).permitAll().antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated();
 		
+		//adicionando o filtro de login
+		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), this.jwtUtil));
+		
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	}
+	
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(this.userDetailsService).passwordEncoder(bCryptPasswordEncoder());
 	}
 	
 	 @Bean
