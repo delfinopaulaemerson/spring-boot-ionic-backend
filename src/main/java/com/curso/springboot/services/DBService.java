@@ -20,6 +20,7 @@ import com.curso.springboot.domain.PagamentoComCartao;
 import com.curso.springboot.domain.Pedido;
 import com.curso.springboot.domain.Produto;
 import com.curso.springboot.domain.enums.EstadoPagamento;
+import com.curso.springboot.domain.enums.Perfil;
 import com.curso.springboot.domain.enums.TipoCliente;
 import com.curso.springboot.repositories.CategoriaRepository;
 import com.curso.springboot.repositories.CidadeRepository;
@@ -123,18 +124,22 @@ public class DBService {
 		this.estadoRepository.saveAll(Arrays.asList(est1, est2));
 		this.cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
-		Cliente cli1 = new Cliente(null, "Maria Silva", "spotifyemersondelfino@gmail.com", "36378912377", TipoCliente.PESSOAFISICA,this.bCryptPasswordEncoder.encode("123"));
-
+		Cliente cli1 = new Cliente(null, "Maria Silva", "spotifyemersondelfino@gmail.com", "81523430052", TipoCliente.PESSOAFISICA,this.bCryptPasswordEncoder.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
 
+		Cliente cli2= new Cliente(null, "Ana Costa", "delfs@hotmail.com", "51753487013", TipoCliente.PESSOAFISICA,this.bCryptPasswordEncoder.encode("123"));
+		cli2.addPerfil(Perfil.ADMIN);
+		cli2.getTelefones().addAll(Arrays.asList("2125806164", "2199855002"));
+		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 203", "Jardim", "38220834", cli1, c1);
-
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
+		Endereco e3 = new Endereco(null, "Avenida Rio Branco", "110", "Sala 8000", "Centro", "20921080", cli2, c2);
 
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		cli2.getEnderecos().addAll(Arrays.asList(e3));
 
-		this.clienteRepository.saveAll(Arrays.asList(cli1));
-		this.enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		this.clienteRepository.saveAll(Arrays.asList(cli1,cli2));
+		this.enderecoRepository.saveAll(Arrays.asList(e1, e2, e3));
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
