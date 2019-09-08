@@ -21,8 +21,8 @@ import org.thymeleaf.context.Context;
 import com.curso.springboot.domain.Cliente;
 import com.curso.springboot.domain.ItemPedido;
 import com.curso.springboot.domain.Pedido;
-import com.curso.springboot.domain.emailDTO;
-import com.curso.springboot.domain.emailDTOAux;
+import com.curso.springboot.dto.emailDTO;
+import com.curso.springboot.dto.emailDTOAux;
 
 @Service
 public class PrepareAndSendEmailService  implements EmailService {
@@ -62,7 +62,7 @@ public class PrepareAndSendEmailService  implements EmailService {
 	@Override
 	public void sendNewPasswordEmail(Cliente cliente, String newPass) {
 		SimpleMailMessage sm  = prepareNewPasswordEmail(cliente, newPass);
-		sendEmail(sm);
+		this.sendEmail(sm);
 		
 	}
 	

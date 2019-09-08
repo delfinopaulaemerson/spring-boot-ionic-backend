@@ -1,4 +1,4 @@
-package com.curso.springboot.domain;
+package com.curso.springboot.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ public class emailDTO implements Serializable{
 	private String situacaoDoPagamento;
 	
 	private String valortotal;
+	
+	private String email;
 	
 	
 	private List<emailDTOAux> itens = new ArrayList<emailDTOAux>();
@@ -70,6 +72,12 @@ public class emailDTO implements Serializable{
 	public void setValortotal(String valortotal) {
 		this.valortotal = valortotal;
 	}
-	
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

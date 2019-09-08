@@ -1,4 +1,4 @@
-package com.curso.springboot.domain;
+package com.curso.springboot.dto;
 
 import java.io.Serializable;
 
