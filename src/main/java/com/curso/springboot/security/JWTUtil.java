@@ -1,12 +1,8 @@
 package com.curso.springboot.security;
 
-import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,13 +27,18 @@ public class JWTUtil {
 	
 	
 	//geracao do token utilizando spring security
+	@SuppressWarnings("deprecation")
 	public String generateToken(String username) {
 		String token = null;
-			Claims claims = Jwts.claims().setSubject(username);
-			
-			//TUDO adicionar a expiracao do token
-			token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
+		Long nowMillis = null;
+		Date exp = null;
 		
+		nowMillis = System.currentTimeMillis()+ Long.valueOf(expiration);
+		exp = new Date(nowMillis);
+		
+		Claims claims = Jwts.claims().setSubject(username);
+			
+		token = Jwts.builder().setClaims(claims).setExpiration(exp).signWith(SignatureAlgorithm.HS512, secret).compact();
 		
 		return token;
 	}
