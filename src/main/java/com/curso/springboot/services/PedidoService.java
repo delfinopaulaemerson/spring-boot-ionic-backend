@@ -3,14 +3,17 @@ package com.curso.springboot.services;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.curso.springboot.domain.Categoria;
+import com.curso.springboot.domain.Cliente;
 import com.curso.springboot.domain.ItemPedido;
 import com.curso.springboot.domain.PagamentoComBoleto;
 import com.curso.springboot.domain.Pedido;
@@ -18,6 +21,8 @@ import com.curso.springboot.domain.enums.EstadoPagamento;
 import com.curso.springboot.repositories.ItemPedidoRepository;
 import com.curso.springboot.repositories.PagamentoRepository;
 import com.curso.springboot.repositories.PedidoRepository;
+import com.curso.springboot.security.UserSS;
+import com.curso.springboot.services.exception.AuthorizationException;
 import com.curso.springboot.services.exception.ObjectNotFoundException;
 
 
@@ -90,12 +95,30 @@ public class PedidoService {
 		//this.prepareAndSendEmailService.sendEmail(msg);
 		
 		
-		MimeMessage mm = this.prepareAndSendEmailService.prepareMimeMessageFromPedido(obj);
+		//MimeMessage mm = this.prepareAndSendEmailService.prepareMimeMessageFromPedido(obj);
 		
-		this.prepareAndSendEmailService.sendHtmlEmail(mm);
+		//this.prepareAndSendEmailService.sendHtmlEmail(mm);
 		
 		
 		return obj;
 	}
+	
+	public Page<Pedido> findPage(Integer page, Integer linesPorPage, String orderBy, String direction){
+		UserSS userSS = null;
+		PageRequest pageRequest = null;
+		Cliente cliente = null;
+		
+		userSS = UserService.authenticated();
+		
+		if(userSS == null)
+			throw new AuthorizationException("Acesso Negado!");
+		
+		 pageRequest = PageRequest.of(page, linesPorPage, Direction.valueOf(direction),orderBy);
+		 cliente = this.clienteService.find(userSS.getId());
+		 
+		return this.repo.findByCliente(cliente, pageRequest);
+	}
+	
+	
 
 }
