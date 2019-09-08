@@ -15,14 +15,18 @@ import com.curso.springboot.domain.Categoria;
 import com.curso.springboot.domain.Cidade;
 import com.curso.springboot.domain.Cliente;
 import com.curso.springboot.domain.Endereco;
+import com.curso.springboot.domain.enums.Perfil;
 import com.curso.springboot.domain.enums.TipoCliente;
 import com.curso.springboot.dto.ClienteDTO;
 import com.curso.springboot.dto.ClienteNewDTO;
 import com.curso.springboot.repositories.CidadeRepository;
 import com.curso.springboot.repositories.ClienteRepository;
 import com.curso.springboot.repositories.EnderecoRepository;
+import com.curso.springboot.security.UserSS;
+import com.curso.springboot.services.exception.AuthorizationException;
 import com.curso.springboot.services.exception.DataIntegrityException;
 import com.curso.springboot.services.exception.ObjectNotFoundException;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 
 
@@ -43,6 +47,14 @@ public class ClienteService {
 	
 	
 	public Cliente find(Integer id) {
+		
+		UserSS user = null;
+		
+		user = UserService.authenticated();
+		
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId()) ) {
+			throw new AuthorizationException("Acesso Negado!");
+		}
 		
 		Optional<Cliente> obj = this.repo.findById(id);
 		
