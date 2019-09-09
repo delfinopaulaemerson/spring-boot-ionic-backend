@@ -26,7 +26,6 @@ import com.curso.springboot.security.UserSS;
 import com.curso.springboot.services.exception.AuthorizationException;
 import com.curso.springboot.services.exception.DataIntegrityException;
 import com.curso.springboot.services.exception.ObjectNotFoundException;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 
 
@@ -110,6 +109,23 @@ public class ClienteService {
 	public List<Cliente> findAll() {
 		
 		return this.repo.findAll();
+	}
+	
+	public Cliente findByEmail(String email) {
+		Cliente cliente = null;
+		UserSS user = null;
+		
+		user = UserService.authenticated();
+		
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername()))
+			throw new AuthorizationException(" Acesso Negado!");
+		
+		cliente = this.repo.findByEmail(email);
+		
+		if(cliente == null)
+			throw new ObjectNotFoundException("Cliente não encontrado! id:"+ user.getId());
+		
+		return cliente;
 	}
 	
 	/**
