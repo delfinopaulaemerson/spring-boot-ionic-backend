@@ -3,8 +3,6 @@ package com.curso.springboot.services;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.mail.internet.MimeMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +10,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.curso.springboot.domain.Categoria;
 import com.curso.springboot.domain.Cliente;
 import com.curso.springboot.domain.ItemPedido;
 import com.curso.springboot.domain.PagamentoComBoleto;
@@ -98,6 +95,8 @@ public class PedidoService {
 		//MimeMessage mm = this.prepareAndSendEmailService.prepareMimeMessageFromPedido(obj);
 		
 		//this.prepareAndSendEmailService.sendHtmlEmail(mm);
+		
+		System.out.println("Email enviado!");
 		
 		
 		return obj;

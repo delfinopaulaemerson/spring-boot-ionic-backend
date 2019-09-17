@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -44,6 +45,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public final static String[] PUBLIC_MATCHERS_POST = {"/clientes/**","/auth/forgot/**"};
 	
 	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**","/swagger-ui.html", "/webjars/**");
+	}
+	
+	@Override
 	protected void configure(HttpSecurity http)throws Exception{
 		
 		if(Arrays.asList(this.environment.getActiveProfiles()).contains("test")) {
@@ -63,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 	
+	
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(this.userDetailsService).passwordEncoder(bCryptPasswordEncoder());
@@ -76,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	    source.registerCorsConfiguration("/**",configuration);
 	    return source;
 	  }
+	 
 	 
 	 //adicionando senha ao cliente
 	 @Bean
